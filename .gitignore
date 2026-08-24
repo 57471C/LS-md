@@ -1,0 +1,8 @@
+node_modules
+.vercel
+dist
+.output
+*.local
+.DS_Store
+.idea
+.vscode

@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-lean: "Varela Round", "Nunito", "Quicksand", system-ui, sans-serif;
+
+  --color-bg: #e6e3dc;
+  --color-bg-elevated: #f3f0e9;
+  --color-fg: #16181d;
+  --color-muted: #5c616b;
+  --color-subtle: #8a8f99;
+  --color-border: #d4d0c8;
+  --color-paper: #fffcf7;
+  --color-ink: #1c1f26;
+  --color-heading: #24364a;
+  --color-canvas: #d9d6cf;
+  --color-pane: #0a0a0a;
+  --color-pane-elevated: #141414;
+  --color-pane-fg: #f4f2ec;
+  --color-pane-muted: #a0a0a0;
+  --color-pane-border: #2a2a2a;
+  --color-accent: #1f7a54;
+  --color-accent-fg: #f4f2ec;
+  --color-ok: #2f6f4e;
+  --color-danger: #9b3a32;
+  --color-link: #2a4d63;
+  --color-table-head: #dfe4ea;
+  --color-table-border: #c5c0b8;
+  --color-hl-heading: #fff6ea;
+  --color-hl-mark: #5a9a7a;
+  --color-hl-link: #7eb8a0;
+  --color-hl-code: #c6d9a6;
+  --color-hl-em: #d4c3ae;
+  --color-hl-kw: #8fb4cc;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-border:
+    0 0 0 1px color-mix(in oklab, var(--color-fg) 8%, transparent),
+    0 1px 2px color-mix(in oklab, var(--color-fg) 6%, transparent),
+    0 18px 40px -24px color-mix(in oklab, var(--color-fg) 28%, transparent);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+}
+
+.paper-page {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-border);
+}
+
+.paper-letter {
+  max-width: 8.5in;
+  min-height: 11in;
+}
+
+.word-doc {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.word-doc > *:first-child {
+  margin-top: 0;
+}
+
+.word-doc h1,
+.word-doc h2,
+.word-doc h3,
+.word-doc h4,
+.word-doc h5,
+.word-doc h6 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--color-heading);
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.word-doc h1 {
+  font-size: 1.85rem;
+  font-weight: 500;
+  margin: 0 0 0.85rem;
+}
+
+.word-doc h2 {
+  font-size: 1.35rem;
+  margin: 1.5rem 0 0.65rem;
+}
+
+.word-doc h3 {
+  font-size: 1.12rem;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.word-doc h4,
+.word-doc h5,
+.word-doc h6 {
+  font-size: 1rem;
+  margin: 1rem 0 0.4rem;
+}
+
+.word-doc p {
+  margin: 0 0 0.75rem;
+  text-wrap: pretty;
+}
+
+.word-doc ul,
+.word-doc ol {
+  margin: 0 0 0.85rem;
+  padding-left: 1.4rem;
+}
+
+.word-doc li {
+  margin: 0.15rem 0;
+}
+
+.word-doc li > ul,
+.word-doc li > ol {
+  margin: 0.2rem 0 0.3rem;
+}
+
+.word-doc input[type="checkbox"] {
+  margin-right: 0.45rem;
+  accent-color: var(--color-accent);
+}
+
+.word-doc blockquote {
+  margin: 0.85rem 0;
+  padding: 0.15rem 0 0.15rem 0.9rem;
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.word-doc pre {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  margin: 0.85rem 0 1rem;
+  overflow-x: auto;
+}
+
+.word-doc code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: color-mix(in oklab, var(--color-heading) 6%, var(--color-paper));
+  padding: 0.05rem 0.28rem;
+  border-radius: 3px;
+}
+
+.word-doc pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+.word-doc table {
+  border-collapse: collapse;
+  margin: 0.75rem 0 1.1rem;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.word-doc th,
+.word-doc td {
+  border: 1px solid var(--color-table-border);
+  padding: 0.4rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.word-doc th {
+  background: var(--color-table-head);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--color-heading);
+}
+
+.word-doc hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.4rem 0;
+}
+
+.word-doc a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.word-doc img {
+  max-width: 100%;
+  height: auto;
+  outline: 1px solid color-mix(in oklab, var(--color-fg) 10%, transparent);
+  outline-offset: -1px;
+}
+
+.pane-scroll::-webkit-scrollbar,
+.cm-host .cm-scroller::-webkit-scrollbar {
+  width: 10px;
+}
+
+.pane-scroll::-webkit-scrollbar-thumb,
+.cm-host .cm-scroller::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-pane-fg) 18%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--color-pane);
+}
+
+.cm-host,
+.cm-host .cm-editor {
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
