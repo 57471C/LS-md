@@ -1,38 +1,68 @@
 # LS.md
 
-**Markdown for Outlook.** A [Lean Studio](https://lean.studio) task pane add-in.
+**Markdown for Outlook.** A [Lean Studio](https://lean.studio) compose-pane add-in.
 
-Type GitHub-flavored Markdown in a pane — headings, lists, tables, quotes, emphasis, and fenced code.
+Type GitHub-flavoured Markdown in the task pane — headings, lists, tables, quotes, emphasis, checklists, and fenced code. **Apply to email** writes HTML into the message.
 
 ```
-LS.md          Outlook on Windows 11
-Markdown pane  →  live document - replace whole body or at cursor
+LS.md pane     Outlook (classic, on-prem Exchange)
+Markdown       →  HTML block in the compose body
 ```
+
+Apply modes:
+
+- **Update block** — replace the previous LS.md block, leave signature and quoted thread alone
+- **Insert at cursor** — insert at the caret
+- **Replace body** — replace the whole body
+
+**Live update** applies as you type. **Pull** reads the current block back to Markdown. The pane opens blank.
+
+## Requirements
+
+- Outlook classic on Windows (tested on Version 2609 build 20430 with on-prem Exchange)
+- Mailbox requirement set 1.3
+- HTTPS host for the pane (Cloudflare Worker in this repo)
+
+Not Word. Permission is `ReadWriteItem`, add-in id `a7c4e2b1-6d38-4f91-9c2a-8b5e1d0f3a47`.
+
+On-prem Exchange rejects `RequestedHeight` on `ItemEdit` and `SupportsPinning` on VersionOverrides 1.0. The generated manifest omits both.
 
 ## Sideload
 
-Requires Microsoft 365 or Outlook Classic 2021+ on Windows 11 (WordApi 1.3). The pane is a web page; Outlook loads it from an HTTPS host (HTTP is allowed only on localhost).
+1. From `outlook/` run `npx wrangler deploy`.
+2. Open the live manifest and save it:
+   `https://ls-md-outlook.terry-b10.workers.dev/manifest.xml`
+3. Outlook: **Get Add-ins → My Add-ins → Add a custom add-in → Add from File**. Pick that XML.
+4. Open a **new mail**. **LS.md** is on the compose ribbon.
 
-1. Host this app over HTTPS.
-2. Open `/office/manifest.xml` on that host, or fill `office/ls-md-manifest.template.xml` and replace `YOUR-HTTPS-HOST`.
-3. In Outlook: **Home** or **Insert → Add-ins → My Add-ins → Upload My Add-in**. Choose `ls-md-manifest.xml`.
-4. The **LS.md** button appears on the Home tab. Live update writes every change; turn it off to draft, then **Apply to document**.
+On-prem often cannot sideload from a URL. Use the saved file. Re-add the file after a manifest version bump.
 
-For a shared catalog: put the XML in a folder such as `C:\Add-ins\LS.md`, then Outlook → File → Trust Center → Trust Center Settings → Trusted Add-in Catalogs.
+Trusted catalog (shared PC): put the XML in a folder such as `C:\Add-ins\LS.md`, then File → Options → Trust Center → Trusted Add-in Catalogs.
+
+## Deploy
+
+Work in this repo. Deploy only from `outlook/`.
+
+```powershell
+cd outlook
+npm install
+npx wrangler login   # first time
+npx wrangler deploy
+```
+
+The Worker serves `public/` and builds `/manifest.xml` so icon and pane URLs match the Worker origin.
 
 ## Source
 
 | Path | Role |
 | --- | --- |
-| [`src/lib/office/bridge.ts`](src/lib/office/bridge.ts) | Office.js host detect, `insertHtml` / `getHtml` |
-| [`src/lib/office/manifest.ts`](src/lib/office/manifest.ts) | Task pane manifest (GUID, icons, Home ribbon) |
-| [`src/lib/markdown/parse.ts`](src/lib/markdown/parse.ts) | GFM → Word-friendly HTML |
-| [`src/lib/markdown/from-html.ts`](src/lib/markdown/from-html.ts) | Pull the document back to Markdown |
-| [`src/lib/markdown/edit.ts`](src/lib/markdown/edit.ts) | Toolbar wrap / prefix helpers |
-| [`src/components/markdown-editor.tsx`](src/components/markdown-editor.tsx) | CodeMirror Markdown highlighting |
-| [`src/components/markdown-pane.tsx`](src/components/markdown-pane.tsx) | Task pane chrome and live sync |
-| [`src/components/word-workspace.tsx`](src/components/word-workspace.tsx) | Desktop / mobile Word workspace |
-| [`public/office/`](public/office/) | Ribbon icons 16 / 32 / 80 |
-| [`office/ls-md-manifest.template.xml`](office/ls-md-manifest.template.xml) | Sideload XML (replace the host) |
+| [`outlook/public/taskpane.html`](outlook/public/taskpane.html) | Task pane shell |
+| [`outlook/public/taskpane.js`](outlook/public/taskpane.js) | Markdown → HTML, Office.js apply / pull |
+| [`outlook/public/taskpane.css`](outlook/public/taskpane.css) | Pane + preview styles |
+| [`outlook/public/vendor/`](outlook/public/vendor/) | marked + highlight.js |
+| [`outlook/public/icons/`](outlook/public/icons/) | Ribbon icons 16 / 32 / 80 |
+| [`outlook/public/commands.html`](outlook/public/commands.html) | Function file |
+| [`outlook/worker.js`](outlook/worker.js) | Manifest + static assets |
+| [`outlook/wrangler.toml`](outlook/wrangler.toml) | Cloudflare Worker |
 
-Permissions: `ReadWriteDocument`. Add-in id: `8f3c1e2a-9b47-4d6e-a1f0-5c2d8e7b4a91`.
+`src/` and `office/` are the older Word pane. They are not what Outlook loads.
