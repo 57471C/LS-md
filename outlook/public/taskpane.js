@@ -244,7 +244,9 @@ Terry
     if (!window.marked) return "<p>" + escapeHtml(source).replace(/\n/g, "<br>") + "</p>";
     const html = marked.parse(source, { async: false });
     if (typeof html !== "string") return "";
-    return html.replace(/<\/table>(?:\s*<p>\s*<\/p>)*/gi, "</table><p class=\"md-gap\">&nbsp;</p>");
+    return html
+      .replace(/<\/table>(?:\s*<p>\s*<\/p>)*/gi, "</table><p class=\"md-gap\">&nbsp;</p>")
+      .replace(/<\/pre>(?:\s*<p>\s*<\/p>)*/gi, "</pre><p class=\"md-gap\">&nbsp;</p>");
   }
 
   function sanitize(html) {
