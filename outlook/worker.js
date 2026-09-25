@@ -5,8 +5,9 @@
  *
  * Exchange on-prem schema notes:
  * - No RequestedHeight on ItemEdit
- * - No SupportsPinning on VersionOverrides 1.0 (that child is 1.1 only)
- * - No .html URLs: Cloudflare Assets 307s foo.html -> /foo and Exchange rejects redirects
+ * - No SupportsPinning on VersionOverrides 1.0
+ * Outlook appends ?_host_Info=... to the pane URL. Serve the HTML file for
+ * both /taskpane and /taskpane.html so that query string cannot 404.
  */
 const ADDIN_ID = "a7c4e2b1-6d38-4f91-9c2a-8b5e1d0f3a47";
 
@@ -20,8 +21,8 @@ function originFrom(request) {
 
 function xml(host) {
   const icon = (n) => `${host}/icons/icon-${n}.png`;
-  const taskpane = `${host}/taskpane`;
-  const commands = `${host}/commands`;
+  const taskpane = `${host}/taskpane.html`;
+  const commands = `${host}/commands.html`;
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp
   xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
@@ -30,14 +31,14 @@ function xml(host) {
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
   <Id>${ADDIN_ID}</Id>
-  <Version>1.0.2.0</Version>
+  <Version>1.0.3.0</Version>
   <ProviderName>Lean Studio</ProviderName>
   <DefaultLocale>en-AU</DefaultLocale>
   <DisplayName DefaultValue="LS.md" />
   <Description DefaultValue="Type Markdown in a task pane. Apply writes a speedDF-styled HTML block into the email body." />
   <IconUrl DefaultValue="${icon(32)}" />
   <HighResolutionIconUrl DefaultValue="${icon(80)}" />
-  <SupportUrl DefaultValue="${host}/taskpane" />
+  <SupportUrl DefaultValue="${taskpane}" />
   <AppDomains>
     <AppDomain>${host}</AppDomain>
   </AppDomains>
@@ -153,14 +154,32 @@ function manifestResponse(request) {
   });
 }
 
+const PAGES = {
+  "/taskpane": "/taskpane.html",
+  "/taskpane.html": "/taskpane.html",
+  "/commands": "/commands.html",
+  "/commands.html": "/commands.html",
+};
+
+function assetRequest(request, pathname) {
+  const url = new URL(request.url);
+  url.pathname = pathname;
+  return new Request(url.toString(), request);
+}
+
 export default {
   async fetch(request, env) {
     const path = new URL(request.url).pathname;
     if (path === "/manifest.xml" || path === "/office/manifest.xml") {
       return manifestResponse(request);
     }
+    const mapped = PAGES[path];
+    if (mapped) {
+      const res = await env.ASSETS.fetch(assetRequest(request, mapped));
+      if (res.status !== 404) return res;
+    }
     if (path === "/" || path === "") {
-      return Response.redirect(new URL("/taskpane", request.url), 302);
+      return Response.redirect(new URL("/taskpane.html", request.url), 302);
     }
     return env.ASSETS.fetch(request);
   },
