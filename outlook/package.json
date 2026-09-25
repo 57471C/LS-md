@@ -1,0 +1,14 @@
+{
+  "name": "ls-md-outlook",
+  "private": true,
+  "description": "LS.md for Outlook — Cloudflare Worker + task pane",
+  "scripts": {
+    "login": "wrangler login",
+    "deploy": "wrangler deploy",
+    "whoami": "wrangler whoami",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.140.0"
+  }
+}
