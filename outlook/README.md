@@ -1,20 +1,20 @@
-# LS.md for Outlook
+# Outlook Worker
 
-Word add-in stays at the repo root. This folder is the Outlook compose pane and Cloudflare Worker.
+Compose-pane add-in + Cloudflare Worker. Product notes are in the root [README](../README.md).
 
-`RequestedHeight` is illegal on `ItemEdit` (compose). On-prem Exchange rejects the manifest if it is present.
+`RequestedHeight` is illegal on `ItemEdit`. `SupportsPinning` is illegal on VersionOverrides 1.0. On-prem Exchange rejects the manifest if either is present. `worker.js` generates XML without them.
 
-## Workflow
-
-Work in Antigravity on this repo. Deploy from `outlook/`.
+## Deploy
 
 ```powershell
 cd outlook
 npm install
-npx wrangler login
+npx wrangler login   # first time
 npx wrangler deploy
 ```
 
-Sideload only the live Worker URL:
+Sideload the live manifest file (not a localhost URL):
 
-`https://ls-md-outlook.<account>.workers.dev/manifest.xml`
+`https://ls-md-outlook.terry-b10.workers.dev/manifest.xml`
+
+Then a **new mail**, not a window that was already open.
