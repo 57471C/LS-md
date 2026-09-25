@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "lsmd.outlook.draft";
+  const STORAGE_KEY = "lsmd.outlook.draft.v2";
   const THEME_KEY = "lsmd.outlook.previewTheme";
   const ROOT_ID = "lsmd-root";
 
@@ -24,41 +24,6 @@
     title: "#0e7490",
   };
 
-  const SAMPLE = `# Site update
-
-**From:** WHS / Lean Studio  
-**Date:** ${new Date().toLocaleDateString("en-AU")}
-
-## Summary
-
-- Plant walk complete
-- Two actions parked for Friday
-- Insurance pack still waiting on wages
-
-## Actions
-
-- [x] Walk the floor with the leading hand
-- [ ] Send the NSW wage threshold note
-- [ ] File the visitor sign-in exception
-
-> Keep the body in Markdown. LS.md writes a speedDF-styled HTML block into the message and leaves the signature / quoted thread alone when you use **Update block**.
-
-### Codes
-
-\`\`\`ts
-const item = Office.context.mailbox.item;
-item.body.setAsync(html, { coercionType: Office.CoercionType.Html });
-\`\`\`
-
-| Item | Owner | Due |
-| --- | --- | --- |
-| Wage note | WHS | Fri |
-| Sign-in exception | Reception | Mon |
-
-Regards  
-Terry
-`;
-
   const TOOLS = [
     { id: "h1", label: "H1", title: "Heading 1" },
     { id: "h2", label: "H2", title: "Heading 2" },
@@ -75,7 +40,6 @@ Terry
     { id: "fence", label: "{ }", title: "Code block" },
     { id: "table", label: "⊞", title: "Table" },
     { id: "hr", label: "—", title: "Rule" },
-    { id: "sample", label: "Tpl", title: "Sample email", kind: "menu" },
   ];
 
   function lsGet(key) {
@@ -176,10 +140,6 @@ Terry
     if (id === "fence") return applyPatch(insertSnippet(value, start, end, "\n```ts\n\n```\n"));
     if (id === "table") return applyPatch(insertSnippet(value, start, end, "\n| Column | Column |\n| --- | --- |\n|  |  |\n"));
     if (id === "hr") return applyPatch(insertSnippet(value, start, end, "\n\n---\n\n"));
-    if (id === "sample") {
-      els.editor.value = SAMPLE;
-      onDraftChange();
-    }
   }
 
   function configureMarked() {
@@ -689,7 +649,7 @@ Terry
     }
 
     const saved = lsGet(STORAGE_KEY);
-    els.editor.value = saved && saved.trim() ? saved : SAMPLE;
+    els.editor.value = saved && saved.trim() ? saved : "";
     renderPreview();
 
     document.querySelectorAll(".tab").forEach((btn) => {
