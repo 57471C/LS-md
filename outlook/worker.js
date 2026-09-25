@@ -3,7 +3,10 @@
  * Static files come from public/ via the ASSETS binding.
  * /manifest.xml is generated so IconUrl / SourceLocation match this origin.
  *
- * Do not put RequestedHeight on ItemEdit. Exchange schema rejects it.
+ * Exchange on-prem schema notes:
+ * - No RequestedHeight on ItemEdit
+ * - No SupportsPinning on VersionOverrides 1.0 (that child is 1.1 only)
+ * - No .html URLs: Cloudflare Assets 307s foo.html -> /foo and Exchange rejects redirects
  */
 const ADDIN_ID = "a7c4e2b1-6d38-4f91-9c2a-8b5e1d0f3a47";
 
@@ -17,8 +20,8 @@ function originFrom(request) {
 
 function xml(host) {
   const icon = (n) => `${host}/icons/icon-${n}.png`;
-  const taskpane = `${host}/taskpane.html`;
-  const commands = `${host}/commands.html`;
+  const taskpane = `${host}/taskpane`;
+  const commands = `${host}/commands`;
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <OfficeApp
   xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
@@ -27,14 +30,14 @@ function xml(host) {
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
   xsi:type="MailApp">
   <Id>${ADDIN_ID}</Id>
-  <Version>1.0.1.0</Version>
+  <Version>1.0.2.0</Version>
   <ProviderName>Lean Studio</ProviderName>
   <DefaultLocale>en-AU</DefaultLocale>
   <DisplayName DefaultValue="LS.md" />
   <Description DefaultValue="Type Markdown in a task pane. Apply writes a speedDF-styled HTML block into the email body." />
   <IconUrl DefaultValue="${icon(32)}" />
   <HighResolutionIconUrl DefaultValue="${icon(80)}" />
-  <SupportUrl DefaultValue="${host}/" />
+  <SupportUrl DefaultValue="${host}/taskpane" />
   <AppDomains>
     <AppDomain>${host}</AppDomain>
   </AppDomains>
@@ -86,7 +89,6 @@ function xml(host) {
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="Taskpane.Url" />
-                    <SupportsPinning>true</SupportsPinning>
                   </Action>
                 </Control>
               </Group>
@@ -158,7 +160,7 @@ export default {
       return manifestResponse(request);
     }
     if (path === "/" || path === "") {
-      return Response.redirect(new URL("/taskpane.html", request.url), 302);
+      return Response.redirect(new URL("/taskpane", request.url), 302);
     }
     return env.ASSETS.fetch(request);
   },
