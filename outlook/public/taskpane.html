@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LS.md for Outlook</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script>
+      // Classic Outlook keeps the pane spinner up until this is assigned.
+      if (window.Office) Office.initialize = function () {};
+    </script>
+    <script src="vendor/marked.min.js"></script>
+    <script src="vendor/highlight.min.js"></script>
+    <link rel="stylesheet" href="taskpane.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="chrome">
+        <div class="brand">
+          <img class="brand-mark" src="icons/icon-32.png" width="22" height="22" alt="" />
+          <div>
+            <div class="brand-name">LS.md</div>
+            <div class="brand-sub">Markdown for Outlook</div>
+          </div>
+        </div>
+        <span id="host-pill" class="pill">Starting…</span>
+      </header>
+
+      <div class="toolbar" id="toolbar" role="toolbar" aria-label="Markdown tools"></div>
+
+      <div class="tabs">
+        <button type="button" class="tab is-on" data-view="write">Write</button>
+        <button type="button" class="tab" data-view="split">Split</button>
+        <button type="button" class="tab" data-view="preview">Preview</button>
+      </div>
+
+      <div class="workspace" data-layout="write">
+        <section class="editor-col">
+          <textarea
+            id="editor"
+            spellcheck="true"
+            wrap="soft"
+            placeholder="# Subject-worthy heading&#10;&#10;Write GitHub-flavoured Markdown. Apply pushes a speedDF-styled HTML block into the message."
+          ></textarea>
+        </section>
+        <div class="gutter" aria-hidden="true"></div>
+        <section class="preview-col">
+          <article id="preview" class="markdown-view markdown-view--pane" data-theme="light"></article>
+        </section>
+      </div>
+
+      <footer class="dock">
+        <div class="dock-row">
+          <label class="switch-label">
+            <button type="button" id="live-toggle" role="switch" aria-checked="false" class="switch">
+              <span class="knob"></span>
+            </button>
+            Live update
+          </label>
+          <div class="seg">
+            <button type="button" class="seg-btn is-on" data-mode="block">Update block</button>
+            <button type="button" class="seg-btn" data-mode="insert">Insert at cursor</button>
+            <button type="button" class="seg-btn" data-mode="replace">Replace body</button>
+          </div>
+        </div>
+        <div class="dock-row actions">
+          <button type="button" id="apply-btn" class="btn-primary">Apply to email</button>
+          <button type="button" id="pull-btn" class="btn">Pull</button>
+          <button type="button" id="theme-btn" class="btn" title="Toggle preview theme">Theme</button>
+        </div>
+        <div class="status">
+          <span id="word-count">0 words</span>
+          <span id="status-line">Draft</span>
+        </div>
+      </footer>
+    </div>
+    <script src="taskpane.js"></script>
+  </body>
+</html>
