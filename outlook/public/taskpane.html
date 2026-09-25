@@ -5,11 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LS.md for Outlook</title>
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-    <script>
-      // Classic Outlook keeps the pane spinner up until this is assigned.
-      if (window.Office) Office.initialize = function () {};
-    </script>
     <script src="vendor/marked.min.js"></script>
     <script src="vendor/highlight.min.js"></script>
     <link rel="stylesheet" href="taskpane.css" />
@@ -76,5 +71,9 @@
       </footer>
     </div>
     <script src="taskpane.js"></script>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script>
+      if (window.Office) Office.initialize = function () {};
+    </script>
   </body>
 </html>
